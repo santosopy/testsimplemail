@@ -1,6 +1,6 @@
 <?php 
     $from_email         = 'sender@abc.com'; //from mail, sender email address
-    $recipient_email = 'tanaka@tsart.jp'; //recipient email address
+    $recipient_email = 'santoso@tsart.jp'; //recipient email address
 
     //Load POST data from HTML form
     $sender_name = $_POST["sender_name"]; //sender name
