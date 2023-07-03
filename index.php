@@ -39,6 +39,17 @@
                 <input class="form-control" type="email" name="sender_email" placeholder="Recipient's Email Address" required/>
             </div>
             <div class="form-group">
+                <select class="form-control" name="occupation">
+                    <option value="" selected="selected">【選択して下さい】</option>
+                    <option value="高校生">高校生</option>
+                    <option value="大学生">大学生</option>
+                    <option value="短大生">短大生</option>
+                    <option value="専門学校生">専門学校生</option>
+                    <option value="パート・アルバイト">パート・アルバイト</option>
+                    <option value="その他">その他</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <div class="form-check form-check-inline">
                     <input class="form-control" type="radio" name="gender" id="gender" value="male">
                     <label class="form-check-label" for="inlineRadio1">male</label>
@@ -82,19 +93,23 @@
                     </ul>
                     <ul>
                         <li>
-                            sender_name : 
+                            名前 : 
                             ${document.querySelector("input[name=sender_name]").value}
                         </li>
                         <li>
-                            sender_email : 
+                            メールアドレス : 
                             ${document.querySelector("input[name=sender_email]").value}
                         </li>
                         <li>
-                            gender : 
+                            職業 : 
+                            ${document.querySelector("select[name=occupation]").value}
+                        </li>
+                        <li>
+                            性別 : 
                             ${myGender}
                         </li>
                         <li>
-                            message : 
+                            メッセージ : 
                             ${document.querySelector("textarea[name=message]").value.replace(/\r?\n/g, '<br />')}
                         </li>
                     </ul>
@@ -146,47 +161,51 @@
                 filename:     'myfile.pdf',
             }
 
-            html2pdf().set(opt).from(pdf).save()
-            // html2pdf().set(opt).from(pdf).outputPdf().then(function(pdf) {
-            //     const formData = new FormData()
-            //     formData.append(
-            //         'sender_name', 
-            //         document.querySelector("input[name=sender_name]").value
-            //     )
-            //     formData.append(
-            //         'sender_email', 
-            //         document.querySelector("input[name=sender_email]").value
-            //     )
-            //     formData.append(
-            //         'gender', 
-            //         myGender
-            //     )
-            //     formData.append(
-            //         'message', 
-            //         document.querySelector("textarea[name=message]").value
-            //     )
-            //     formData.append(
-            //         'pdf', 
-            //         btoa(pdf)
-            //     )
+            // html2pdf().set(opt).from(pdf).save()
+            html2pdf().set(opt).from(pdf).outputPdf().then(function(pdf) {
+                const formData = new FormData()
+                formData.append(
+                    'sender_name', 
+                    document.querySelector("input[name=sender_name]").value
+                )
+                formData.append(
+                    'sender_email', 
+                    document.querySelector("input[name=sender_email]").value
+                )
+                formData.append(
+                    'occupation', 
+                    document.querySelector("select[name=occupation]").value
+                )
+                formData.append(
+                    'gender', 
+                    myGender
+                )
+                formData.append(
+                    'message', 
+                    document.querySelector("textarea[name=message]").value
+                )
+                formData.append(
+                    'pdf', 
+                    btoa(pdf)
+                )
 
-            //     fetch(`${window.location.href}process.php`, {
-            //         method: 'post',
-            //         body: formData
-            //     })
-            //     .then(response => response.text())
-            //     .then(body => {
-            //         console.log(body)
-            //     })
+                fetch(`${window.location.href}process.php`, {
+                    method: 'post',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(body => {
+                    console.log(body)
+                })
 
-            // })
+            })
 
-            // setTimeout(() => {
-            //     pdf.style.display = "none"
-            //     document.querySelector('form').style.display = "block"
-            //     document.querySelector('form').reset()
-            //     document.querySelectorAll('.form-control').forEach( e => e.style.cssText = `pointer-events: visible; background: transparent;` )
-            // }, 1000)
+            setTimeout(() => {
+                pdf.style.display = "none"
+                document.querySelector('form').style.display = "block"
+                document.querySelector('form').reset()
+                document.querySelectorAll('.form-control').forEach( e => e.style.cssText = `pointer-events: visible; background: transparent;` )
+            }, 1000)
         }
     </script>
 </body>
