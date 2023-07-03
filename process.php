@@ -1,15 +1,16 @@
 <?php 
-    $from_email         = 'sender@abc.com'; //from mail, sender email address
+    $from_email         = $_POST["sender_email"]; //from mail, sender email address
     $recipient_email = 'santoso@tsart.jp'; //recipient email address
 
     //Load POST data from HTML form
-    $sender_name = $_POST["sender_name"]; //sender name
-    $reply_to_email = $_POST["sender_email"]; //sender email, it will be used in "reply-to" header
-    $subject     = "お問い合わせがあります。"; //subject for the email
+    $sender_name = $_POST["sender_name"]; 
+    $reply_to_email = $_POST["sender_email"]; 
+    $subject     = "お問い合わせがあります。"; 
     $subject = '=?utf-8?B?' . base64_encode($subject) . '?=';
-    $gender     = $_POST["gender"]; //subject for the email
-    $msg     = $_POST["message"]; //subject for the email
-    $pdf     = $_POST["pdf"]; //subject for the email
+    $gender     = $_POST["gender"]; 
+    $msg     = $_POST["message"]; 
+    $pdf     = $_POST["pdf"]; 
+    $date = date('Ymd_His');
 
     $encoded_content = chunk_split($pdf);
     $boundary = md5("random"); // define boundary with a md5 hashed value
@@ -34,12 +35,19 @@
     //attachment
     $body .= "--$boundary\r\n";
     $body .="Content-Type: application/pdf; \r\n";
-    $body .="Content-Disposition: attachment; filename=test.pdf\r\n";
+    $body .="Content-Disposition: attachment; filename=お申込み_".$date.".pdf\r\n";
     $body .="Content-Transfer-Encoding: base64\r\n";
     $body .="X-Attachment-Id: ".rand(1000, 99999)."\r\n\r\n";
     $body .= $encoded_content; // Attaching the encoded file with email
 
-    $sentMailResult = mail($recipient_email, $subject, $body, $headers);
+    // attachment image
+    $handle = fopen($fileName, "r"); 
+    $content = fread($handle, $fileSize); 
+    fclose($handle);               
+    $encoded_content = chunk_split(base64_encode($content));
+    print_r($encoded_content);
+
+    // $sentMailResult = mail($recipient_email, $subject, $body, $headers);
 
     if($sentMailResult ){
         echo "<h3>File Sent Successfully.<h3>";
