@@ -11,6 +11,9 @@
     $gender     = $_POST["gender"]; 
     $msg     = $_POST["message"]; 
     $pdf     = $_POST["pdf"]; 
+    $image     = $_POST["image"]; 
+    $imageName     = $_POST["imageName"]; 
+    $imageType     = $_POST["imageType"];  
     $date = date('Ymd_His');
 
     $encoded_content = chunk_split($pdf);
@@ -44,12 +47,14 @@
     $body .= $encoded_content; // Attaching the encoded file with email
 
     // attachment image
-    $handle = fopen($fileName, "r"); 
-    $content = fread($handle, $fileSize); 
-    fclose($handle);               
-    $encoded_content = chunk_split(base64_encode($content));
-    print_r($encoded_content);
-
+    $encoded_content = chunk_split($image);
+    $body .= "--$boundary\r\n";
+    $body .="Content-Type: ".$imageType."; name=".$imageName."\r\n";
+    $body .="Content-Disposition: attachment; filename=".$imageName."\r\n";
+    $body .="Content-Transfer-Encoding: base64\r\n";
+    $body .="X-Attachment-Id: ".rand(1000, 99999)."\r\n\r\n";
+    $body .= $encoded_content;
+    
     $sentMailResult = mail($recipient_email, $subject, $body, $headers);
 
     if($sentMailResult ){
